@@ -1,0 +1,66 @@
+<!doctype html>
+<html ng-app="currentWeatherTest">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="This test is to create a simple application that can pull data from a web service and display it to the user, it should take no more than a couple of hours.">
+    <meta name="keywords" content="HTML, CSS, JS, JavaScript, framework, angluar, bootstrap, front-end, frontend, web development, API, weather, station">
+    <meta name="author" content="Hugo Smadja">
+    <title>Weather Station Test</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.11/angular.min.js"></script>
+    <script type="text/javascript" src="weather-station-test.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+</head>
+<body>
+<div ng-controller="CurrentWeatherController" class="container">
+    <h1>Current Weather</h1>
+    <div class="panel panel-primary">
+        <div class="panel-heading clearfix">
+            Cities
+            <button ng-click="sortByTemperature(); reverse = !reverse" type="button" class="btn btn-default pull-right">Sort by temperature <span class="glyphicon glyphicon-sort"></span></button>
+            <div ng-if="waitLoadingTemp" class="alert alert-info clearfix">
+                Loading. Please wait...
+            </div>
+            <div ng-if="errorTemp" class="alert alert-danger">
+               {{error}}
+            </div>
+        </div>
+        <div class="list-group">
+            <a ng-repeat="city in cities | orderBy:'temperature':reverse" ng-click="getCurrentWeather($index)" href="#cities/{{city.name}}" class="list-group-item clearfix">
+                <div class="clearfix">
+                    <strong>{{city.name}}</strong>
+                    <div class="pull-right">
+                        {{city.temperature}}<span ng-if='city.temperature'>°C&nbsp;</span>
+                        <span ng-if="!weather || $index != selectedCity" class="glyphicon glyphicon-chevron-right"></span>
+                        <span ng-if="weather && $index == selectedCity" class="glyphicon glyphicon-chevron-down"></span>
+                    </div>
+                </div>
+                <div ng-if="waitLoading && $index == selectedCity" class="alert alert-info">
+                    Loading. Please wait...
+                </div>
+                <div ng-if="error && $index == selectedCity" class="alert alert-danger">
+                   {{error}}
+                </div>
+                <div ng-if="weather && $index == selectedCity">
+                        <dl class="dl-horizontal">
+                        <dt>Location</dt>
+                        <dd>
+                            Longitude: {{weather.coord.lon}}, Lattitude: {{weather.coord.lat}}
+                        </dd>
+                        <dt>Current condition</dt>
+                        <dd><img src="{{weather.weather[0].icon_url}}" alt="{{weather.weather[0].main}}"/>{{weather.weather[0].description}}</dd>
+                        <dt>Temperature</dt>
+                        <dd>{{weather.main.temperature}}°C (min: {{weather.main.temperature_min}}°C / max: {{weather.main.temperature_max}}°C)</dd>
+                        <dt>Atmospheric pressure</dt>
+                        <dd>{{weather.main.pressure}} hPa</dd>
+                        <dt>Humidity</dt>
+                        <dd>{{weather.main.humidity}}%</dd>
+                    </dl>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
